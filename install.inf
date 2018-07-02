@@ -1,9 +1,9 @@
 [info]
 title=Hilite Vars
-desc=Some description
+desc=Highlights "variables" inside syntax strings, ie does part of lexer work, which lexers cannot do
 type=cudatext-plugin
 subdir=cuda_hilite_vars
-homepage=
+homepage=https://github.com/CudaText-addons/cuda_hilite_vars
 
 [item1]
 section=events
