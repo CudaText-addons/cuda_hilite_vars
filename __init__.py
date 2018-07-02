@@ -20,7 +20,7 @@ config = {}
 config['Bash script'] = {
     're_str': r'''("|')(\\\\|\\\1|.)*?\1''',
     're_var': r'\$\w+|\$\{.*?\}',
-    'color_id': 'IdVar',
+    'color_id': 'String2',
     }
 
 
