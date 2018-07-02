@@ -1,0 +1,16 @@
+[info]
+title=Hilite Vars
+desc=Some description
+type=cudatext-plugin
+subdir=cuda_hilite_vars
+homepage=
+
+[item1]
+section=events
+events=on_change_slow,on_lexer,on_open
+
+[item10]
+section=commands
+caption=Hilite Vars\Config
+method=config
+menu=o
