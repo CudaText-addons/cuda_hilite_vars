@@ -1,9 +1,11 @@
 import os
+import re
 from cudatext import *
 
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
 
 MAX_CONFIG_SECTIONS = 30
+MYTAG = 202 # uniq int for all ed.attr plugins
 
 _theme = app_proc(PROC_THEME_SYNTAX_DATA_GET, '')
 
@@ -40,6 +42,8 @@ def load_config():
             're_var': regex_var, 
             'color_id': color,
             'color_int': _theme_item(color),
+            'o_str': re.compile(regex_str, re.I),
+            'o_var': re.compile(regex_var, re.I),
             }
             
 
@@ -61,11 +65,10 @@ class Command:
     
     def __init__(self):
 
-        global config
         if not os.path.isfile(fn_config):
             save_config()
         load_config()    
-        print(config)
+        #print(config)
 
     def config(self):
 
@@ -74,9 +77,41 @@ class Command:
         else:
             msg_status('Config file not found')
         
+
     def on_change_slow(self, ed_self):
-        pass
+        self.work(ed_self)
+        
     def on_lexer(self, ed_self):
-        pass
+        self.work(ed_self)
+
     def on_open(self, ed_self):
-        pass
+        self.work(ed_self)
+
+
+    def work(self, ed):
+        
+        global config
+        lex = ed.get_prop(PROP_LEXER_FILE)
+        if not lex in config: return
+        props = config[lex]
+        o_str = props['o_str']
+        o_var = props['o_var']
+        ncolor = props['color_int']
+
+        ed.attr(MARKERS_DELETE_BY_TAG, tag=MYTAG)
+        
+        for index in range(ed.get_line_count()):
+            line = ed.get_text_line(index)
+            if not line: continue
+            
+            for m in o_str.finditer(line):
+                span_out = m.span()
+                for mm in o_var.finditer(m.group()):
+                    span_in = mm.span()
+                    ed.attr(MARKERS_ADD, 
+                        tag = MYTAG,
+                        x = span_in[0]+span_out[0],
+                        y = index,
+                        len = span_in[1]-span_in[0],
+                        color_font = ncolor,
+                        )
