@@ -5,11 +5,21 @@ fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
 
 MAX_CONFIG_SECTIONS = 30
 
+_theme = app_proc(PROC_THEME_SYNTAX_DATA_GET, '')
+
+def _theme_item(name):
+    for i in _theme:
+        if i['name']==name:
+            return i['color_font']
+    return 0x808080
+    
+    
 config = {}
 config['Bash script'] = {
     're_str': '".*?"',
     're_var': '$\w+|${.*?}',
-    'color': 'IdVar',
+    'color_id': 'IdVar',
+    'color_int': _theme_item('IdVar')
     }
 
 
@@ -28,7 +38,8 @@ def load_config():
         config[lexer] = {
             're_str': regex_str, 
             're_var': regex_var, 
-            'color': color,
+            'color_id': color,
+            'color_int': _theme_item(color),
             }
             
 
@@ -39,7 +50,7 @@ def save_config():
         ini_write(fn_config, s, 'lexer', key)
         ini_write(fn_config, s, 'regex_str', config[key]['re_str'])
         ini_write(fn_config, s, 'regex_var', config[key]['re_var'])
-        ini_write(fn_config, s, 'color', config[key]['color'])
+        ini_write(fn_config, s, 'color', config[key]['color_id'])
 
 
 def bool_to_str(v): return '1' if v else '0'
