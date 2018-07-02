@@ -4,7 +4,7 @@ from cudatext import *
 
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
 
-MAX_CONFIG_SECTIONS = 30
+MAX_CONFIG_SECTIONS = 41
 MYTAG = 202 # uniq int for all ed.attr plugins
 
 _theme = app_proc(PROC_THEME_SYNTAX_DATA_GET, '')
