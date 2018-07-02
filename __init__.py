@@ -18,10 +18,9 @@ def _theme_item(name):
 
 config = {}
 config['Bash script'] = {
-    're_str': '".*?"',
-    're_var': '\$\w+|\$\{.*?\}',
+    're_str': r'''("|')(\\\\|\\\1|.)*?\1''',
+    're_var': r'\$\w+|\$\{.*?\}',
     'color_id': 'IdVar',
-    'color_int': _theme_item('IdVar')
     }
 
 
@@ -41,10 +40,13 @@ def load_config():
             're_str': regex_str,
             're_var': regex_var,
             'color_id': color,
-            'color_int': _theme_item(color),
-            'o_str': re.compile(regex_str, re.I),
-            'o_var': re.compile(regex_var, re.I),
             }
+
+    for key in config.keys():
+        c = config[key]
+        c['color_int'] = _theme_item(c['color_id'])
+        c['o_str'] = re.compile(c['re_str'], re.I)
+        c['o_var'] = re.compile(c['re_var'], re.I)
 
 
 def save_config():
@@ -65,12 +67,12 @@ class Command:
 
     def __init__(self):
 
-        if not os.path.isfile(fn_config):
-            save_config()
         load_config()
-        #print(config)
 
     def config(self):
+
+        if not os.path.isfile(fn_config):
+            save_config()
 
         if os.path.isfile(fn_config):
             file_open(fn_config)
@@ -95,7 +97,7 @@ class Command:
         if not lex in config:
             ed.attr(MARKERS_DELETE_BY_TAG, tag=MYTAG)
             return
-            
+
         props = config[lex]
         o_str = props['o_str']
         o_var = props['o_var']
