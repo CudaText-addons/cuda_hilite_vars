@@ -14,12 +14,12 @@ def _theme_item(name):
         if i['name']==name:
             return i['color_font']
     return 0x808080
-    
-    
+
+
 config = {}
 config['Bash script'] = {
     're_str': '".*?"',
-    're_var': '$\w+|${.*?}',
+    're_var': '\$\w+|\$\{.*?\}',
     'color_id': 'IdVar',
     'color_int': _theme_item('IdVar')
     }
@@ -38,14 +38,14 @@ def load_config():
         color = ini_read(fn_config, s, 'color', '')
         if not color: continue
         config[lexer] = {
-            're_str': regex_str, 
-            're_var': regex_var, 
+            're_str': regex_str,
+            're_var': regex_var,
             'color_id': color,
             'color_int': _theme_item(color),
             'o_str': re.compile(regex_str, re.I),
             'o_var': re.compile(regex_var, re.I),
             }
-            
+
 
 def save_config():
     global config
@@ -62,25 +62,25 @@ def str_to_bool(s): return s=='1'
 
 
 class Command:
-    
+
     def __init__(self):
 
         if not os.path.isfile(fn_config):
             save_config()
-        load_config()    
+        load_config()
         #print(config)
 
     def config(self):
 
-        if os.path.isfile(fn_config):    
+        if os.path.isfile(fn_config):
             file_open(fn_config)
         else:
             msg_status('Config file not found')
-        
+
 
     def on_change_slow(self, ed_self):
         self.work(ed_self)
-        
+
     def on_lexer(self, ed_self):
         self.work(ed_self)
 
@@ -89,26 +89,29 @@ class Command:
 
 
     def work(self, ed):
-        
+
         global config
         lex = ed.get_prop(PROP_LEXER_FILE)
-        if not lex in config: return
+        if not lex in config:
+            ed.attr(MARKERS_DELETE_BY_TAG, tag=MYTAG)
+            return
+            
         props = config[lex]
         o_str = props['o_str']
         o_var = props['o_var']
         ncolor = props['color_int']
 
         ed.attr(MARKERS_DELETE_BY_TAG, tag=MYTAG)
-        
+
         for index in range(ed.get_line_count()):
             line = ed.get_text_line(index)
             if not line: continue
-            
+
             for m in o_str.finditer(line):
                 span_out = m.span()
                 for mm in o_var.finditer(m.group()):
                     span_in = mm.span()
-                    ed.attr(MARKERS_ADD, 
+                    ed.attr(MARKERS_ADD,
                         tag = MYTAG,
                         x = span_in[0]+span_out[0],
                         y = index,
