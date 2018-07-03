@@ -7,15 +7,6 @@ fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
 MAX_CONFIG_SECTIONS = 41
 MYTAG = 202 # uniq int for all ed.attr plugins
 
-_theme = app_proc(PROC_THEME_SYNTAX_DATA_GET, '')
-
-def _theme_item(name):
-    for i in _theme:
-        if i['name']==name:
-            return i['color_font']
-    return 0x808080
-
-
 config = {}
 config['Bash script'] = {
     're_str': r'''("|')(\\\\|\\\1|.)*?\1''',
@@ -44,9 +35,24 @@ def load_config():
 
     for key in config.keys():
         c = config[key]
-        c['color_int'] = _theme_item(c['color_id'])
         c['o_str'] = re.compile(c['re_str'], re.I)
         c['o_var'] = re.compile(c['re_var'], re.I)
+        c['color_int'] = 0xFF
+
+
+def update_colors():
+    
+    _theme = app_proc(PROC_THEME_SYNTAX_DATA_GET, '')
+    def _theme_item(name):
+        for i in _theme:
+            if i['name']==name:
+                return i['color_font']
+        return 0x808080
+
+    global config
+    for key in config.keys():
+        c = config[key]
+        c['color_int'] = _theme_item(c['color_id'])
 
 
 def save_config():
@@ -81,12 +87,16 @@ class Command:
 
 
     def on_change_slow(self, ed_self):
+
         self.work(ed_self)
 
     def on_lexer(self, ed_self):
+
         self.work(ed_self)
 
     def on_open(self, ed_self):
+
+        update_colors() # do it in on_open to use current theme
         self.work(ed_self)
 
 
