@@ -1,6 +1,6 @@
 [info]
 title=Hilite Vars
-desc=Highlights "variables" inside syntax strings, ie does part of lexer work, which lexers cannot do
+desc=Highlights "variables" inside strings literals (for Bash lexer, etc)
 type=cudatext-plugin
 subdir=cuda_hilite_vars
 homepage=https://github.com/CudaText-addons/cuda_hilite_vars
