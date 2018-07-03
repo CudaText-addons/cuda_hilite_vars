@@ -7,44 +7,50 @@ fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
 MAX_CONFIG_SECTIONS = 41
 MYTAG = 202 # uniq int for all ed.attr plugins
 
-config = {}
-config['Bash script'] = {
-    're_str': r'''("|')(\\\\|\\\1|.)*?\1''',
-    're_var': r'\$\w+|\$\{.*?\}',
-    'color_id': 'String2',
+BASH_RE_STR = r'''("|')(\\\\|\\\1|.)*?\1'''
+BASH_RE_VAR = r'\$\w+|\$\{.*?\}'
+
+config = {
+    'Bash script': 
+        {
+        're_str': BASH_RE_STR,
+        're_var': BASH_RE_VAR,
+        'o_str': re.compile(BASH_RE_STR, re.I),
+        'o_var': re.compile(BASH_RE_VAR, re.I),
+        'color_id': 'String2',
+        'color_int': 0xFF,
+        }
     }
 
 
 def load_config():
+
     global config
     for i in range(MAX_CONFIG_SECTIONS):
         s = str(i)
         lexer = ini_read(fn_config, s, 'lexer', '')
         if not lexer: continue
-        regex_str = ini_read(fn_config, s, 'regex_str', '')
-        if not regex_str: continue
-        regex_var = ini_read(fn_config, s, 'regex_var', '')
-        if not regex_var: continue
+        re_str = ini_read(fn_config, s, 'regex_str', '')
+        if not re_str: continue
+        re_var = ini_read(fn_config, s, 'regex_var', '')
+        if not re_var: continue
         color = ini_read(fn_config, s, 'color', '')
         if not color: continue
         config[lexer] = {
-            're_str': regex_str,
-            're_var': regex_var,
+            're_str': re_str,
+            're_var': re_var,
+            'o_str': re.compile(re_str, re.I),
+            'o_var': re.compile(re_var, re.I),
             'color_id': color,
+            'color_int': 0xFF,
             }
-
-    for key in config.keys():
-        c = config[key]
-        c['o_str'] = re.compile(c['re_str'], re.I)
-        c['o_var'] = re.compile(c['re_var'], re.I)
-        c['color_int'] = 0xFF
 
 
 def update_colors():
     
-    _theme = app_proc(PROC_THEME_SYNTAX_DATA_GET, '')
-    def _theme_item(name):
-        for i in _theme:
+    d = app_proc(PROC_THEME_SYNTAX_DATA_GET, '')
+    def _item(name):
+        for i in d:
             if i['name']==name:
                 return i['color_font']
         return 0x808080
@@ -52,10 +58,11 @@ def update_colors():
     global config
     for key in config.keys():
         c = config[key]
-        c['color_int'] = _theme_item(c['color_id'])
+        c['color_int'] = _item(c['color_id'])
 
 
 def save_config():
+
     global config
     for (i, key) in enumerate(config.keys()):
         s = str(i)
@@ -74,6 +81,7 @@ class Command:
     def __init__(self):
 
         load_config()
+        update_colors()
 
     def config(self):
 

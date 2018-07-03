@@ -1,5 +1,6 @@
 
 2018.07.03
++ refactored
 - fix: theme color was not updated on changed theme
 
 2018.07.02
