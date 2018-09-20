@@ -1,4 +1,7 @@
 
+2018.09.20
++ add config for Perl
+
 2018.07.03
 + refactored
 - fix: theme color was not updated on changed theme
