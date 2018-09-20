@@ -10,6 +10,9 @@ MYTAG = 202 # uniq int for all ed.attr plugins
 BASH_RE_STR = r'''("|')(\\\\|\\\1|.)*?\1'''
 BASH_RE_VAR = r'\$\w+|\$\{.*?\}'
 
+PERL_RE_STR = r'''("|`)(\\\\|\\\1|.)*?\1'''
+PERL_RE_VAR = r'''[\$@]\w+'''
+
 config = {
     'Bash script': 
         {
@@ -17,9 +20,18 @@ config = {
         're_var': BASH_RE_VAR,
         'o_str': re.compile(BASH_RE_STR, re.I),
         'o_var': re.compile(BASH_RE_VAR, re.I),
-        'color_id': 'String2',
+        'color_id': 'IdVar',
         'color_int': 0xFF,
-        }
+        },
+    'Perl':
+        {
+        're_str': PERL_RE_STR,
+        're_var': PERL_RE_VAR,
+        'o_str': re.compile(PERL_RE_STR, re.I),
+        'o_var': re.compile(PERL_RE_VAR, re.I),
+        'color_id': 'IdVar',
+        'color_int': 0xFF,
+        },
     }
 
 
