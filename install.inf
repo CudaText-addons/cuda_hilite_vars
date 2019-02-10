@@ -1,5 +1,5 @@
 [info]
-title=Hilite Vars
+title=Highlight Variables
 desc=Highlights "variables" inside strings literals (for Bash lexer, etc)
 type=cudatext-plugin
 subdir=cuda_hilite_vars
@@ -11,6 +11,6 @@ events=on_change_slow,on_lexer,on_open
 
 [item10]
 section=commands
-caption=Hilite Vars\Config
+caption=Highlight Variables\Config
 method=config
 menu=o
