@@ -4,7 +4,6 @@ from cudatext import *
 
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
 
-MAX_CONFIG_SECTIONS = 41
 MYTAG = 202 # uniq int for all ed.attr plugins
 
 BASH_RE_STR = r'''("|')(\\\\|\\\1|.)*?\1'''
@@ -47,17 +46,15 @@ def get_color(name):
 def load_config():
 
     global config
-    for i in range(MAX_CONFIG_SECTIONS):
-        s = str(i)
-        lexer = ini_read(fn_config, s, 'lexer', '')
-        if not lexer: continue
+    sections = ini_proc(INI_GET_SECTIONS, fn_config)
+    for s in sections:
         re_str = ini_read(fn_config, s, 'regex_str', '')
         if not re_str: continue
         re_var = ini_read(fn_config, s, 'regex_var', '')
         if not re_var: continue
         color = ini_read(fn_config, s, 'color', '')
         if not color: continue
-        config[lexer] = {
+        config[s] = {
             're_str': re_str,
             're_var': re_var,
             'o_str': re.compile(re_str, re.I),
@@ -78,16 +75,11 @@ def update_colors():
 def save_config():
 
     global config
-    for (i, key) in enumerate(config.keys()):
-        s = str(i)
-        ini_write(fn_config, s, 'lexer', key)
-        ini_write(fn_config, s, 'regex_str', config[key]['re_str'])
-        ini_write(fn_config, s, 'regex_var', config[key]['re_var'])
-        ini_write(fn_config, s, 'color', config[key]['color_id'])
-
-
-def bool_to_str(v): return '1' if v else '0'
-def str_to_bool(s): return s=='1'
+    for key in config.keys():
+        val = config[key]
+        ini_write(fn_config, key, 'regex_str', val['re_str'])
+        ini_write(fn_config, key, 'regex_var', val['re_var'])
+        ini_write(fn_config, key, 'color', val['color_id'])
 
 
 class Command:
