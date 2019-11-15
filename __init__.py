@@ -14,7 +14,7 @@ PERL_RE_STR = r'''("|`)(\\\\|\\\1|.)*?\1'''
 PERL_RE_VAR = r'''[\$@]\w+'''
 
 config = {
-    'Bash script': 
+    'Bash script':
         {
         're_str': BASH_RE_STR,
         're_var': BASH_RE_VAR,
@@ -33,6 +33,15 @@ config = {
         'color_int': 0xFF,
         },
     }
+
+theme = app_proc(PROC_THEME_SYNTAX_DICT_GET, '')
+
+def get_color(name):
+
+    global theme
+    if name in theme:
+        return theme[name]['color_font']
+    return 0x808080
 
 
 def load_config():
@@ -59,18 +68,11 @@ def load_config():
 
 
 def update_colors():
-    
-    d = app_proc(PROC_THEME_SYNTAX_DATA_GET, '')
-    def _item(name):
-        for i in d:
-            if i['name']==name:
-                return i['color_font']
-        return 0x808080
 
     global config
     for key in config.keys():
         c = config[key]
-        c['color_int'] = _item(c['color_id'])
+        c['color_int'] = get_color(c['color_id'])
 
 
 def save_config():
