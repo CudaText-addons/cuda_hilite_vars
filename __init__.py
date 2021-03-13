@@ -4,7 +4,7 @@ from cudatext import *
 
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
 
-MYTAG = 202 # uniq int for all ed.attr plugins
+MYTAG = app_proc(PROC_GET_UNIQUE_TAG, '')
 
 BASH_RE_STR = r'''("|')(\\\\|\\\1|.)*?\1'''
 BASH_RE_VAR = r'\$\w+|\$\{.*?\}'

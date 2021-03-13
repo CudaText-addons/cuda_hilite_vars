@@ -1,4 +1,7 @@
 
+2021.03.13
++ add: use new API
+
 2019.11.15
 - avoid deleted API
 * changed format of config file, now [section] is lexer name
