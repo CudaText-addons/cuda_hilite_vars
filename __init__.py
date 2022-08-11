@@ -20,8 +20,8 @@ config = {
         {
         're_str': BASH_RE_STR,
         're_var': BASH_RE_VAR,
-        'o_str': re.compile(BASH_RE_STR, 0),
-        'o_var': re.compile(BASH_RE_VAR, 0),
+        'o_str': re.compile(BASH_RE_STR, re.I),
+        'o_var': re.compile(BASH_RE_VAR, re.I),
         'color_id': 'String2',
         'color_int': 0xFF,
         },
@@ -29,8 +29,8 @@ config = {
         {
         're_str': PYTHON_RE_STR,
         're_var': PYTHON_RE_VAR,
-        'o_str': re.compile(PYTHON_RE_STR, 0),
-        'o_var': re.compile(PYTHON_RE_VAR, 0),
+        'o_str': re.compile(PYTHON_RE_STR, re.I),
+        'o_var': re.compile(PYTHON_RE_VAR, re.I),
         'color_id': 'String2',
         'color_int': 0xFF,
         },
@@ -38,8 +38,8 @@ config = {
         {
         're_str': PERL_RE_STR,
         're_var': PERL_RE_VAR,
-        'o_str': re.compile(PERL_RE_STR, 0),
-        'o_var': re.compile(PERL_RE_VAR, 0),
+        'o_str': re.compile(PERL_RE_STR, re.I),
+        'o_var': re.compile(PERL_RE_VAR, re.I),
         'color_id': 'String2',
         'color_int': 0xFF,
         },
@@ -69,8 +69,8 @@ def load_config():
         config[s] = {
             're_str': re_str,
             're_var': re_var,
-            'o_str': re.compile(re_str, 0),
-            'o_var': re.compile(re_var, 0),
+            'o_str': re.compile(re_str, re.I),
+            'o_var': re.compile(re_var, re.I),
             'color_id': color,
             'color_int': 0xFF,
             }
