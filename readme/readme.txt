@@ -1,19 +1,29 @@
 plugin for CudaText.
-it performs work additional to lexer: highlights "variables" (e.g. in Bash script it's $var or ${var_long}) inside string literals. lexer cannot do this, it highlights string literals with single color.
+it performs work additional to lexer highlighting: highlights "variables"
+inside string literals. lexer cannot do this, it highlights string literals
+with single color.
 
-plugin has config file, call menu item "Options / Settings-plugins / Highlight Variables".
-config file has sections [lexer_name] with lexer names.
-plugin has predefined config for "Bash script" and "Perl":
+plugin has config file, call menu item:
+"Options / Settings-plugins / Highlight Variables / Config".
+config file has sections with lexer names.
+plugin has predefined sections for:
+- Bash script
+- Python
+- Perl
+for example, Bash config:
 
-[Bash script]
-regex_str=".*?"
-regex_var=\$\w+|\$\{.*?\}
-color=IdVar
+	[Bash script]
+	regex_str=("|')(\\.|.)*?\1
+	regex_var=\$\w+|\$\{.*?\}
+	color=String2
 
-items:
+keys in these sections:
 - reg.ex. for string literal,
 - reg.ex. for variable inside string literal,
-- color-id from theme. to see possible color-ids, open CudaText dialog Options / Settings-more / Settings-theme-syntax. also good to use color-id IdVar, it's used for variables outside of strings, but (in default theme) it's greenish color similar to string color.
+- element id from syntax-theme. to see possible ids, open CudaText dialog:
+"Options / Settings-more / Settings-theme-syntax".
+it's good to use id 'String2' or 'IdVar'. 
+
 
 author: Alexey Torgashin (CudaText)
 license: MIT
