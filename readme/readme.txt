@@ -2,6 +2,8 @@ plugin for CudaText.
 it performs work additional to lexer highlighting: highlights "variables"
 inside string literals. lexer cannot do this, it highlights string literals
 with single color.
+limitation: only single-line string literals are supported (you cannot handle
+multi-line f-strings in Python).
 
 plugin has config file, call menu item:
 "Options / Settings-plugins / Highlight Variables / Config".
