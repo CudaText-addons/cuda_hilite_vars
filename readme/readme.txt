@@ -12,17 +12,17 @@ plugin has predefined sections for:
 - Perl
 for example, Bash config:
 
-	[Bash script]
-	regex_str=("|')(\\.|.)*?\1
-	regex_var=\$\w+|\$\{.*?\}
-	color=String2
-
+  [Bash script]
+  regex_str=("|')(\\.|.)*?\1
+  regex_var=\$\w+|\$\{.*?\}
+  color=String2
+  
 keys in these sections:
 - reg.ex. for string literal,
 - reg.ex. for variable inside string literal,
 - element id from syntax-theme. to see possible ids, open CudaText dialog:
-"Options / Settings-more / Settings-theme-syntax".
-it's good to use id 'String2' or 'IdVar'. 
+"Options / Settings-theme-syntax".
+suggested id is 'String2', also good is 'IdVar'. 
 
 
 author: Alexey Torgashin (CudaText)

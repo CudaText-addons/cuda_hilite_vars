@@ -1,6 +1,6 @@
 
 2022.08.11
-+ add: predefined config for Python
++ add: predefined config for Python f-strings
 * change predefined configs for Bash, Perl
 
 2021.03.13
