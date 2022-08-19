@@ -1,4 +1,8 @@
 
+2022.08.19
+- fix: config for Perl
++ add: translation (by Markus)
+
 2022.08.11
 + add: predefined config for Python f-strings
 * change predefined configs for Bash, Perl
