@@ -2,6 +2,10 @@ import os
 import re
 from cudatext import *
 
+from cudax_lib import get_translation
+_ = get_translation(__file__)  # I18N
+
+
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
 
 MYTAG = app_proc(PROC_GET_UNIQUE_TAG, '')
@@ -12,8 +16,8 @@ BASH_RE_VAR = r'\$\w+|\$\{.*?\}'
 PYTHON_RE_STR = r'''f("|')(\\.|.)*?\1'''
 PYTHON_RE_VAR = r'''\{.*?\}'''
 
-PERL_RE_STR = r'''("|`)(\\.|.)*?\1'''
-PERL_RE_VAR = r'''[\$@]\w+'''
+PERL_RE_STR = r'''(["'`])(\\.|.)*?\1'''
+PERL_RE_VAR = r'''[\$@%]\w+'''  # $scalar, @array, %hash (fm)
 
 config = {
     'Bash script':
@@ -109,7 +113,7 @@ class Command:
         if os.path.isfile(fn_config):
             file_open(fn_config)
         else:
-            msg_status('Config file not found')
+            msg_status(_('Config file not found'))
 
 
     def on_change_slow(self, ed_self):
