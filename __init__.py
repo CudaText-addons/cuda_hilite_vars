@@ -13,7 +13,7 @@ MYTAG = app_proc(PROC_GET_UNIQUE_TAG, '')
 BASH_RE_STR = r'''("|')(\\.|.)*?\1'''
 BASH_RE_VAR = r'\$\w+|\$\{.*?\}'
 
-PYTHON_RE_STR = r'''f("|')(\\.|.)*?\1'''
+PYTHON_RE_STR = r'''\bf("{1,3}|'{1,3})(\\.|.)*?\1'''
 PYTHON_RE_VAR = r'''\{.*?\}'''
 
 PERL_RE_STR = r'''(["'`])(\\.|.)*?\1'''
@@ -24,8 +24,8 @@ config = {
         {
         're_str': BASH_RE_STR,
         're_var': BASH_RE_VAR,
-        'o_str': re.compile(BASH_RE_STR, re.I),
-        'o_var': re.compile(BASH_RE_VAR, re.I),
+        'o_str': re.compile(BASH_RE_STR, 0),
+        'o_var': re.compile(BASH_RE_VAR, 0),
         'color_id': 'String2',
         'color_int': 0xFF,
         },
@@ -33,8 +33,8 @@ config = {
         {
         're_str': PYTHON_RE_STR,
         're_var': PYTHON_RE_VAR,
-        'o_str': re.compile(PYTHON_RE_STR, re.I),
-        'o_var': re.compile(PYTHON_RE_VAR, re.I),
+        'o_str': re.compile(PYTHON_RE_STR, 0),
+        'o_var': re.compile(PYTHON_RE_VAR, 0),
         'color_id': 'String2',
         'color_int': 0xFF,
         },
@@ -42,8 +42,8 @@ config = {
         {
         're_str': PERL_RE_STR,
         're_var': PERL_RE_VAR,
-        'o_str': re.compile(PERL_RE_STR, re.I),
-        'o_var': re.compile(PERL_RE_VAR, re.I),
+        'o_str': re.compile(PERL_RE_STR, 0),
+        'o_var': re.compile(PERL_RE_VAR, 0),
         'color_id': 'String2',
         'color_int': 0xFF,
         },
