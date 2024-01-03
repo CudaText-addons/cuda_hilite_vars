@@ -19,7 +19,7 @@ config = {
         },
     'Bash script': {
         'begin': '',
-        'res': r'\$\w+|\$\{.*?\}',
+        'res': r'\$\w+|\${.*?}',
         },
     }
 

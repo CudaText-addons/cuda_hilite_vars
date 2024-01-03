@@ -15,10 +15,11 @@ Config file has sections - lexer names. Keys in sections:
 
 "begin"
   If not empty, string literal must begin with specified text.
-  For example, for Python it is "f".
+  In-memory value for Python is "f".
 "res"
   Regular expression which finds "variables" inside string literals.
-  For example, for Python it is "{.*?}".
+  In-memory value for Python is "{.*?}".
+  In-memory value for Bash is '\$\w+|\${.*?}'.
 "theme"
   Sets coloring of fragment. Element id from CudaText syntax-theme.
   To see possible ids, open CudaText dialog: "Options / Settings-theme-syntax".
