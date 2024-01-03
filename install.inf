@@ -1,13 +1,13 @@
 [info]
 title=Highlight Variables
-desc=Highlights "variables" inside string literals (for Bash lexer, etc)
+desc=Highlights "variables" inside string literals
 type=cudatext-plugin
 subdir=cuda_hilite_vars
 homepage=https://github.com/CudaText-addons/cuda_hilite_vars
 
 [item1]
 section=events
-events=on_lexer_parsed
+events=on_lexer_parsed,on_scroll,on_focus
 
 [item10]
 section=commands

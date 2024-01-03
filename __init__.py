@@ -12,9 +12,6 @@ MYTAG = app_proc(PROC_GET_UNIQUE_TAG, '')
 BASH_RE_STR = r'''("|')(\\.|.)*?\1'''
 BASH_RE_VAR = r'\$\w+|\$\{.*?\}'
 
-PYTHON_RE_STR = r'''\bf("{1,3}|'{1,3})(\\.|.)*?\1'''
-PYTHON_RE_VAR = r'''\{.*?\}'''
-
 PERL_RE_STR = r'''(["'`])(\\.|.)*?\1'''
 PERL_RE_VAR = r'''[\$@%]\w+'''  # $scalar, @array, %hash (fm)
 
@@ -33,7 +30,7 @@ theme = app_proc(PROC_THEME_SYNTAX_DICT_GET, '')
 
 def log(s):
     print('[HiVars]', s)
-    
+
 
 def get_color(name):
 
@@ -93,16 +90,31 @@ class Command:
 
         self.work(ed_self, 'on_lexer_parsed')
 
+    def on_scroll(self, ed_self):
+
+        '''
+        self.work(ed_self, 'on_scroll')
+        '''
+        self.on_focus(ed_self)
+
+    def by_timer(self, tag='', info=''):
+
+        self.work(self.timer_ed, 'by_timer')
+
+    def on_focus(self, ed_self):
+
+        self.timer_ed = ed_self
+        timer_proc(TIMER_START_ONE, 'cuda_hilite_vars.by_timer', 150, '0')
 
     def work(self, ed: Editor, reason):
 
         global config
         #log('reason: '+reason)
-        
+
         ed.attr(MARKERS_DELETE_BY_TAG, tag=MYTAG)
         lex = ed.get_prop(PROP_LEXER_FILE)
         if not lex in config:
-            log('not supported lexer')
+            log('not supported lexer: '+lex)
             return
 
         props = config[lex]
@@ -113,9 +125,12 @@ class Command:
         color_int = get_color(props['color_id'])
 
         line_top = ed.get_prop(PROP_LINE_TOP)
-        line_btm = ed.get_prop(PROP_LINE_BOTTOM)
-        #log('line_top: '+str(line_top))
-        #log('line_btm: '+str(line_btm))
+        line_btm = ed.get_prop(PROP_LINE_BOTTOM) + 5
+        #line_btm = min(ed.get_line_count()-1, line_top + ed.get_prop(PROP_VISIBLE_LINES) + 5)
+        # adding N=5...10 is a workaround for API bug: it don't return last partially visible token
+
+        log('line_top: '+str(line_top))
+        log('line_btm: '+str(line_btm))
 
         tok = ed.get_token(TOKEN_LIST_SUB, index1=line_top, index2=line_btm)
         if not tok:
@@ -130,6 +145,7 @@ class Command:
             chars = ch0+ch1
             tok = [t for t in tok if t['str'].startswith(chars)]
 
+        changed = False
         for t in tok:
             #log('token: '+repr(t))
             x1 = t['x1']
@@ -137,26 +153,24 @@ class Command:
             y1 = t['y1']
             y2 = t['y2']
             s = t['str']
-            
-            pos_from = -1
-            
+
+            pos_to = -1
             while True:
-                pos_from = s.find(res_from, pos_from+1)
+                pos_from = s.find(res_from, pos_to+1)
                 if pos_from<0:
                     break
-                
+
                 pos_to = s.find(res_to, pos_from)
                 if pos_to<0:
                     break
-                
+
                 s_before = s[:pos_from]
                 count_eol = s_before.count('\n')
                 if count_eol>0:
-                    offset_eol = s_before.rfind('\n')
-                    count_x = pos_from - offset_eol - 1
+                    count_x = pos_from - s_before.rfind('\n') - 1
                 else:
                     count_x = x1 + pos_from
-    
+
                 ed.attr(MARKERS_ADD,
                     tag = MYTAG,
                     x = count_x,
@@ -164,3 +178,7 @@ class Command:
                     len = pos_to - pos_from + 1,
                     color_font = color_int,
                     )
+                changed = True
+
+        if changed:
+            ed.action(EDACTION_UPDATE)
