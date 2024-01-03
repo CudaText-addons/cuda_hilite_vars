@@ -18,8 +18,7 @@ PERL_RE_VAR = r'''[\$@%]\w+'''  # $scalar, @array, %hash (fm)
 config = {
     'Python':
         {
-        'ch0': 'f',
-        'ch1': '',
+        'begin': 'f',
         'res_from': '{',
         'res_to': '}',
         'color_id': 'String2',
@@ -45,16 +44,14 @@ def load_config():
     global config
     sections = ini_proc(INI_GET_SECTIONS, fn_config)
     for s in sections:
-        ch0 = ini_read(fn_config, s, 'ch0', '')
-        ch1 = ini_read(fn_config, s, 'ch1', '')
+        begin = ini_read(fn_config, s, 'begin', '')
         res_from = ini_read(fn_config, s, 'res_from', '')
         res_to = ini_read(fn_config, s, 'res_to', '')
         color_id = ini_read(fn_config, s, 'color_id', '')
         if not res_from or not res_to:
             continue
         config[s] = {
-            'ch0': ch0,
-            'ch1': ch1,
+            'begin': begin,
             'res_from': res_from,
             'res_to': res_to,
             'color_id': color_id,
@@ -118,8 +115,7 @@ class Command:
             return
 
         props = config[lex]
-        ch0 = props['ch0']
-        ch1 = props['ch1']
+        begin = props['begin']
         res_from = props['res_from']
         res_to = props['res_to']
         color_int = get_color(props['color_id'])
@@ -141,9 +137,8 @@ class Command:
             #log('no tokens-strings')
             return
 
-        if ch0:
-            chars = ch0+ch1
-            tok = [t for t in tok if t['str'].startswith(chars)]
+        if begin:
+            tok = [t for t in tok if t['str'].startswith(begin)]
 
         changed = False
         for t in tok:
@@ -180,5 +175,3 @@ class Command:
                     )
                 changed = True
 
-        if changed:
-            ed.action(EDACTION_UPDATE)

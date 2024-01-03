@@ -1,5 +1,6 @@
 2024.01.02
-+ add: adjusted default Python config to support also f'''text''' and f"""text"""; you need to delete your default config file: settings/cuda_hilite_vars.ini
++ add: plugin is rewritten; now it handles only visible screen area, and now it is activated by timer (about 150msec after 'scroll' event or 'parsed' event)
+* change: changed config format, see readme
 
 2022.08.19
 - fix: config for Perl

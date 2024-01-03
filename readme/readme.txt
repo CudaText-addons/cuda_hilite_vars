@@ -1,31 +1,32 @@
-plugin for CudaText.
-it performs work additional to lexer highlighting: highlights "variables"
-inside string literals. lexer cannot do this, it highlights string literals
-with single color.
-limitation: only single-line string literals are supported (you cannot handle
-multi-line f-strings in Python).
+Plugin for CudaText.
+It performs work additional to lexer highlighting: highlights "variables"
+inside string literals. Lexer cannot do this, it highlights string literals
+with single color. Plugin supports multi-line string literals too.
 
-plugin has config file, call menu item:
-"Options / Settings-plugins / Highlight Variables / Config".
-config file has sections with lexer names.
-plugin has predefined sections for:
-- Bash script
+Plugin has predefined (in memory) configuration for:
 - Python
+- Bash script
 - Perl
-for example, Bash config:
+For other lexers, you need to add config-file section.
 
-  [Bash script]
-  regex_str=("|')(\\.|.)*?\1
-  regex_var=\$\w+|\$\{.*?\}
-  color=String2
-  
-keys in these sections:
-- reg.ex. for string literal,
-- reg.ex. for variable inside string literal,
-- element id from syntax-theme. to see possible ids, open CudaText dialog:
-"Options / Settings-theme-syntax".
-suggested id is 'String2', also good is 'IdVar'. 
+To open config-file, call menu item:
+"Options / Settings-plugins / Highlight Variables / Config".
+Config file has sections with lexer names. Keys in these sections:
+
+"begin"
+  If not empty, string literal must begin with specified text.
+  For example, for Python it is "f".
+"res_from"
+  Text which starts "variables" inside string literals.
+  For example, for Python it is "{".
+"res_to"
+  Text which ends "variables" inside string literals.
+  For example, for Python it is "}".
+"color_id"
+  Element id from syntax-theme. To see possible ids, open CudaText dialog:
+  "Options / Settings-theme-syntax".
+  Suggested value is 'String2', also good is 'IdVar'. 
 
 
-author: Alexey Torgashin (CudaText)
-license: MIT
+Author: Alexey Torgashin (CudaText)
+License: MIT
