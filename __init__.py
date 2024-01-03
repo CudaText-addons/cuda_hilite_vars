@@ -6,21 +6,21 @@ from cudax_lib import get_translation
 _ = get_translation(__file__)  # I18N
 
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
-
 MYTAG = app_proc(PROC_GET_UNIQUE_TAG, '')
-
-BASH_RE_STR = r'''("|')(\\.|.)*?\1'''
-BASH_RE_VAR = r'\$\w+|\$\{.*?\}'
-
-PERL_RE_STR = r'''(["'`])(\\.|.)*?\1'''
-PERL_RE_VAR = r'''[\$@%]\w+'''  # $scalar, @array, %hash (fm)
 
 config = {
     'Python': {
         'begin': 'f',
         'res': r'{.*?}',
-        'theme': 'String2',
-        }
+        },
+    'Perl': {
+        'begin': '',
+        'res': r'[\$@%]\w+',  # $scalar, @array, %hash
+        },
+    'Bash script': {
+        'begin': '',
+        'res': r'\$\w+|\$\{.*?\}',
+        },
     }
 
 theme = app_proc(PROC_THEME_SYNTAX_DICT_GET, '')
@@ -111,10 +111,10 @@ class Command:
             return
 
         props = config[lex]
-        begin = props['begin']
+        begin = props.get('begin', '')
         res = props['res']
         res_re = re.compile(res, 0)
-        color_int = get_color(props['theme'])
+        color_int = get_color(props.get('theme', 'String2'))
 
         line_top = ed.get_prop(PROP_LINE_TOP)
         line_btm = ed.get_prop(PROP_LINE_BOTTOM) + 5
