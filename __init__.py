@@ -1,9 +1,9 @@
 import os
+import re
 from cudatext import *
-
 from cudax_lib import get_translation
-_ = get_translation(__file__)  # I18N
 
+_ = get_translation(__file__)  # I18N
 
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
 
@@ -16,13 +16,11 @@ PERL_RE_STR = r'''(["'`])(\\.|.)*?\1'''
 PERL_RE_VAR = r'''[\$@%]\w+'''  # $scalar, @array, %hash (fm)
 
 config = {
-    'Python':
-        {
+    'Python': {
         'begin': 'f',
-        'res_from': '{',
-        'res_to': '}',
-        'color_id': 'String2',
-        },
+        'res': r'{.*?}',
+        'theme': 'String2',
+        }
     }
 
 theme = app_proc(PROC_THEME_SYNTAX_DICT_GET, '')
@@ -45,16 +43,14 @@ def load_config():
     sections = ini_proc(INI_GET_SECTIONS, fn_config)
     for s in sections:
         begin = ini_read(fn_config, s, 'begin', '')
-        res_from = ini_read(fn_config, s, 'res_from', '')
-        res_to = ini_read(fn_config, s, 'res_to', '')
-        color_id = ini_read(fn_config, s, 'color_id', '')
-        if not res_from or not res_to:
+        res = ini_read(fn_config, s, 'res', '')
+        theme = ini_read(fn_config, s, 'theme', 'String2')
+        if not res:
             continue
         config[s] = {
             'begin': begin,
-            'res_from': res_from,
-            'res_to': res_to,
-            'color_id': color_id,
+            'res': res,
+            'theme': theme,
             }
 
 
@@ -116,17 +112,17 @@ class Command:
 
         props = config[lex]
         begin = props['begin']
-        res_from = props['res_from']
-        res_to = props['res_to']
-        color_int = get_color(props['color_id'])
+        res = props['res']
+        res_re = re.compile(res, 0)
+        color_int = get_color(props['theme'])
 
         line_top = ed.get_prop(PROP_LINE_TOP)
         line_btm = ed.get_prop(PROP_LINE_BOTTOM) + 5
         #line_btm = min(ed.get_line_count()-1, line_top + ed.get_prop(PROP_VISIBLE_LINES) + 5)
         # adding N=5...10 is a workaround for API bug: it don't return last partially visible token
 
-        log('line_top: '+str(line_top))
-        log('line_btm: '+str(line_btm))
+        #log('line_top: '+str(line_top))
+        #log('line_btm: '+str(line_btm))
 
         tok = ed.get_token(TOKEN_LIST_SUB, index1=line_top, index2=line_btm)
         if not tok:
@@ -140,7 +136,6 @@ class Command:
         if begin:
             tok = [t for t in tok if t['str'].startswith(begin)]
 
-        changed = False
         for t in tok:
             #log('token: '+repr(t))
             x1 = t['x1']
@@ -150,14 +145,11 @@ class Command:
             s = t['str']
 
             pos_to = -1
-            while True:
-                pos_from = s.find(res_from, pos_to+1)
-                if pos_from<0:
-                    break
-
-                pos_to = s.find(res_to, pos_from)
-                if pos_to<0:
-                    break
+            for m in res_re.finditer(s, 0):
+                #log('m: '+repr(m))
+                span = m.span()
+                pos_from = span[0]
+                pos_to = span[1]
 
                 s_before = s[:pos_from]
                 count_eol = s_before.count('\n')
@@ -170,8 +162,7 @@ class Command:
                     tag = MYTAG,
                     x = count_x,
                     y = y1 + count_eol,
-                    len = pos_to - pos_from + 1,
+                    len = pos_to - pos_from,
                     color_font = color_int,
                     )
-                changed = True
 

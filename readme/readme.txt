@@ -16,15 +16,12 @@ Config file has sections with lexer names. Keys in these sections:
 "begin"
   If not empty, string literal must begin with specified text.
   For example, for Python it is "f".
-"res_from"
-  Text which starts "variables" inside string literals.
-  For example, for Python it is "{".
-"res_to"
-  Text which ends "variables" inside string literals.
-  For example, for Python it is "}".
-"color_id"
-  Element id from syntax-theme. To see possible ids, open CudaText dialog:
-  "Options / Settings-theme-syntax".
+"res"
+  Regular expression which finds "variables" inside string literals.
+  For example, for Python it is "{.*?}".
+"theme"
+  Element id from current CudaText syntax-theme.
+  To see possible ids, open CudaText dialog: "Options / Settings-theme-syntax".
   Suggested value is 'String2', also good is 'IdVar'. 
 
 
