@@ -7,7 +7,7 @@ homepage=https://github.com/CudaText-addons/cuda_hilite_vars
 
 [item1]
 section=events
-events=on_change_slow,on_lexer,on_open
+events=on_lexer_parsed
 
 [item10]
 section=commands

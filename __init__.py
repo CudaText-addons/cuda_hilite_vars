@@ -1,5 +1,4 @@
 import os
-import re
 from cudatext import *
 
 from cudax_lib import get_translation
@@ -20,36 +19,21 @@ PERL_RE_STR = r'''(["'`])(\\.|.)*?\1'''
 PERL_RE_VAR = r'''[\$@%]\w+'''  # $scalar, @array, %hash (fm)
 
 config = {
-    'Bash script':
-        {
-        're_str': BASH_RE_STR,
-        're_var': BASH_RE_VAR,
-        'o_str': re.compile(BASH_RE_STR, 0),
-        'o_var': re.compile(BASH_RE_VAR, 0),
-        'color_id': 'String2',
-        'color_int': 0xFF,
-        },
     'Python':
         {
-        're_str': PYTHON_RE_STR,
-        're_var': PYTHON_RE_VAR,
-        'o_str': re.compile(PYTHON_RE_STR, 0),
-        'o_var': re.compile(PYTHON_RE_VAR, 0),
+        'ch0': 'f',
+        'ch1': '',
+        'res_from': '{',
+        'res_to': '}',
         'color_id': 'String2',
-        'color_int': 0xFF,
-        },
-    'Perl':
-        {
-        're_str': PERL_RE_STR,
-        're_var': PERL_RE_VAR,
-        'o_str': re.compile(PERL_RE_STR, 0),
-        'o_var': re.compile(PERL_RE_VAR, 0),
-        'color_id': 'String2',
-        'color_int': 0xFF,
         },
     }
 
 theme = app_proc(PROC_THEME_SYNTAX_DICT_GET, '')
+
+def log(s):
+    print('[HiVars]', s)
+    
 
 def get_color(name):
 
@@ -64,38 +48,20 @@ def load_config():
     global config
     sections = ini_proc(INI_GET_SECTIONS, fn_config)
     for s in sections:
-        re_str = ini_read(fn_config, s, 'regex_str', '')
-        if not re_str: continue
-        re_var = ini_read(fn_config, s, 'regex_var', '')
-        if not re_var: continue
-        color = ini_read(fn_config, s, 'color', '')
-        if not color: continue
+        ch0 = ini_read(fn_config, s, 'ch0', '')
+        ch1 = ini_read(fn_config, s, 'ch1', '')
+        res_from = ini_read(fn_config, s, 'res_from', '')
+        res_to = ini_read(fn_config, s, 'res_to', '')
+        color_id = ini_read(fn_config, s, 'color_id', '')
+        if not res_from or not res_to:
+            continue
         config[s] = {
-            're_str': re_str,
-            're_var': re_var,
-            'o_str': re.compile(re_str, re.I),
-            'o_var': re.compile(re_var, re.I),
-            'color_id': color,
-            'color_int': 0xFF,
+            'ch0': ch0,
+            'ch1': ch1,
+            'res_from': res_from,
+            'res_to': res_to,
+            'color_id': color_id,
             }
-
-
-def update_colors():
-
-    global config
-    for key in config.keys():
-        c = config[key]
-        c['color_int'] = get_color(c['color_id'])
-
-
-def save_config():
-
-    global config
-    for key in config.keys():
-        val = config[key]
-        ini_write(fn_config, key, 'regex_str', val['re_str'])
-        ini_write(fn_config, key, 'regex_var', val['re_var'])
-        ini_write(fn_config, key, 'color', val['color_id'])
 
 
 class Command:
@@ -103,12 +69,11 @@ class Command:
     def __init__(self):
 
         load_config()
-        update_colors()
 
     def config(self):
 
         if not os.path.isfile(fn_config):
-            save_config()
+            ini_write(fn_config, '_', '_', '_')
 
         if os.path.isfile(fn_config):
             file_open(fn_config)
@@ -118,45 +83,84 @@ class Command:
 
     def on_change_slow(self, ed_self):
 
-        self.work(ed_self)
+        self.work(ed_self, 'on_change_slow')
 
     def on_lexer(self, ed_self):
 
-        self.work(ed_self)
+        self.work(ed_self, 'on_lexer')
 
-    def on_open(self, ed_self):
+    def on_lexer_parsed(self, ed_self):
 
-        update_colors() # do it in on_open to use current theme
-        self.work(ed_self)
+        self.work(ed_self, 'on_lexer_parsed')
 
 
-    def work(self, ed):
+    def work(self, ed: Editor, reason):
 
         global config
+        #log('reason: '+reason)
+        
+        ed.attr(MARKERS_DELETE_BY_TAG, tag=MYTAG)
         lex = ed.get_prop(PROP_LEXER_FILE)
         if not lex in config:
-            ed.attr(MARKERS_DELETE_BY_TAG, tag=MYTAG)
+            log('not supported lexer')
             return
 
         props = config[lex]
-        o_str = props['o_str']
-        o_var = props['o_var']
-        ncolor = props['color_int']
+        ch0 = props['ch0']
+        ch1 = props['ch1']
+        res_from = props['res_from']
+        res_to = props['res_to']
+        color_int = get_color(props['color_id'])
 
-        ed.attr(MARKERS_DELETE_BY_TAG, tag=MYTAG)
+        line_top = ed.get_prop(PROP_LINE_TOP)
+        line_btm = ed.get_prop(PROP_LINE_BOTTOM)
+        #log('line_top: '+str(line_top))
+        #log('line_btm: '+str(line_btm))
 
-        for index in range(ed.get_line_count()):
-            line = ed.get_text_line(index)
-            if not line: continue
+        tok = ed.get_token(TOKEN_LIST_SUB, index1=line_top, index2=line_btm)
+        if not tok:
+            #log('no tokens at all')
+            return
+        tok = [t for t in tok if t['ks']=='s']
+        if not tok:
+            #log('no tokens-strings')
+            return
 
-            for m in o_str.finditer(line):
-                span_out = m.span()
-                for mm in o_var.finditer(m.group()):
-                    span_in = mm.span()
-                    ed.attr(MARKERS_ADD,
-                        tag = MYTAG,
-                        x = span_in[0]+span_out[0],
-                        y = index,
-                        len = span_in[1]-span_in[0],
-                        color_font = ncolor,
-                        )
+        if ch0:
+            chars = ch0+ch1
+            tok = [t for t in tok if t['str'].startswith(chars)]
+
+        for t in tok:
+            #log('token: '+repr(t))
+            x1 = t['x1']
+            x2 = t['x2']
+            y1 = t['y1']
+            y2 = t['y2']
+            s = t['str']
+            
+            pos_from = -1
+            
+            while True:
+                pos_from = s.find(res_from, pos_from+1)
+                if pos_from<0:
+                    break
+                
+                pos_to = s.find(res_to, pos_from)
+                if pos_to<0:
+                    break
+                
+                s_before = s[:pos_from]
+                count_eol = s_before.count('\n')
+                if count_eol>0:
+                    offset_eol = s_before.rfind('\n')
+                    count_x = pos_from - offset_eol - 1
+                else:
+                    count_x = x1 + pos_from
+    
+                ed.attr(MARKERS_ADD,
+                    tag = MYTAG,
+                    x = count_x,
+                    y = y1 + count_eol,
+                    len = pos_to - pos_from + 1,
+                    color_font = color_int,
+                    )
