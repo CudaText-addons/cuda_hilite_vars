@@ -141,7 +141,7 @@ class Command:
 
         line_top = ed.get_prop(PROP_LINE_TOP)
         line_btm = ed.get_prop(PROP_LINE_BOTTOM)
-        #line_btm = min(ed.get_line_count()-1, line_top + ed.get_prop(PROP_VISIBLE_LINES) + 5)
+        #line_btm = min(ed.get_line_count()-1, line_top + ed.get_prop(PROP_VISIBLE_LINES))
 
         #log('line_top: '+str(line_top))
         #log('line_btm: '+str(line_btm))
