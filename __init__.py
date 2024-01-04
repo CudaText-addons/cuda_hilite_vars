@@ -111,15 +111,28 @@ class Command:
             return
 
         props = config[lex]
+
         begin = props.get('begin', '')
-        res = props['res']
-        res_re = re.compile(res, 0)
+        res = props.get('res', '')
         color_int = get_color(props.get('theme', 'String2'))
 
+        if res != props.get('res_saved', ''):
+            props['res_saved'] = res
+            props['res_re'] = re.compile(res, 0)
+            log('compile res_re: '+res)
+        res_re = props['res_re']
+
+        if begin=='':
+            props['begin_re'] = None
+        elif begin != props.get('begin_saved', ''):
+            props['begin_saved'] = begin
+            props['begin_re'] = re.compile(begin, 0)
+            log('compile begin_re: '+begin)
+        begin_re = props['begin_re']
+
         line_top = ed.get_prop(PROP_LINE_TOP)
-        line_btm = ed.get_prop(PROP_LINE_BOTTOM) + 5
+        line_btm = ed.get_prop(PROP_LINE_BOTTOM)
         #line_btm = min(ed.get_line_count()-1, line_top + ed.get_prop(PROP_VISIBLE_LINES) + 5)
-        # adding N=5...10 is a workaround for API bug: it don't return last partially visible token
 
         #log('line_top: '+str(line_top))
         #log('line_btm: '+str(line_btm))
@@ -134,7 +147,7 @@ class Command:
             return
 
         if begin:
-            tok = [t for t in tok if t['str'].startswith(begin)]
+            tok = [t for t in tok if begin_re.match(t['str'], 0)]
 
         for t in tok:
             #log('token: '+repr(t))

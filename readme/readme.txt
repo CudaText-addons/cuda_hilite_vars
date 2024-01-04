@@ -14,12 +14,13 @@ To open config-file, call menu item:
 Config file has sections - lexer names. Keys in sections:
 
 "begin"
-  If not empty, string literal must begin with specified text.
+  Regular expression, which must match at the begin of string literal.
+  Can be empty, then any string literal will be handled.
   In-memory value for Python is "f".
 "res"
   Regular expression which finds "variables" inside string literals.
   In-memory value for Python is "{.*?}".
-  In-memory value for Bash is '\$\w+|\${.*?}'.
+  In-memory value for Bash is "\$\w+|\${.*?}".
 "theme"
   Sets coloring of fragment. Element id from CudaText syntax-theme.
   To see possible ids, open CudaText dialog: "Options / Settings-theme-syntax".
