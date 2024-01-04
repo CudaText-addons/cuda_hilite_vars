@@ -91,6 +91,14 @@ class Command:
         '''
         self.on_focus(ed_self)
 
+    def on_open(self, ed_self):
+        '''
+        Handle on_open only if it is the active editor, ie 'ed'.
+        Ignore on_open in passive ui-tabs. They will be handled by on_focus.
+        '''
+        if ed_self.h==ed.get_prop(PROP_HANDLE_SELF, ''):
+            self.on_focus(ed_self)
+
     def by_timer(self, tag='', info=''):
 
         self.work(self.timer_ed, 'by_timer')
