@@ -26,7 +26,8 @@ config = {
 theme = app_proc(PROC_THEME_SYNTAX_DICT_GET, '')
 
 def log(s):
-    print('[HiVars]', s)
+    pass
+    #print('[HiVars]', s)
 
 
 def get_color(name):
