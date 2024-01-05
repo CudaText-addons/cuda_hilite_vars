@@ -46,8 +46,12 @@ def load_config():
         begin = ini_read(fn_config, s, 'begin', '')
         res = ini_read(fn_config, s, 'res', '')
         theme = ini_read(fn_config, s, 'theme', 'String2')
+
+        if not res and s in config:
+            res = config[s].get('res', '')
         if not res:
             continue
+
         config[s] = {
             'begin': begin,
             'res': res,
