@@ -1,5 +1,7 @@
 2024.01.04
-+ add: plugin is rewritten; now it handles only visible screen area, and now it is activated by timer (about 150msec after 'scroll' event or 'parsed' event)
+* change: plugin is rewritten
++ add: multi-line literals (e.g. in Python) are supported too
++ add: plugin now handles only visible screen area, and now it is activated by timer, about 150msec after 'scroll' event or 'parsed' event
 * change: changed config format, see readme
 
 2022.08.19
