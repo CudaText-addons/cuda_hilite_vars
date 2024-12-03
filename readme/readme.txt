@@ -11,6 +11,9 @@ For other lexers, you need to add config-file section.
 
 To open config-file, call menu item:
 "Options / Settings-plugins / Highlight Variables / Config".
+It creates config file settings/cuda_hilite_vars.ini, if it does not exist,
+and writes dummy ini-key there: _=_. This key _=_ is only to create the file.
+You need to make additional sections there in ini-file.
 Config file has sections - lexer names. Keys in sections:
 
 "begin"
