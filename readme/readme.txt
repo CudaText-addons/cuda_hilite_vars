@@ -20,14 +20,22 @@ Config file has sections - lexer names. Keys in sections:
   Regular expression, which must match at the begin of string literal.
   Can be empty, then any string literal will be handled.
   In-memory value for Python is "f".
+
 "res"
   Regular expression which finds "variables" inside string literals.
   In-memory value for Python is "\{.*?\}".
   In-memory value for Bash is "\$\w+|\$\{.*?\}".
+
 "theme"
   Sets coloring of fragment. Element id from CudaText syntax-theme.
-  To see possible ids, open CudaText dialog: "Options / Settings-theme-syntax".
+  To see possible ids, open CudaText dialog: "Options / Themes / Settings-theme-syntax".
   This is optional key, 'String2' is the default. Also good to use is 'IdVar'.
+
+
+For example, config for Ruby lexer will look like this:
+[Ruby]
+begin=
+res=\#\{.*?\}
 
 
 Author: Alexey Torgashin (CudaText)
