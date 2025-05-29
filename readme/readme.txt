@@ -22,8 +22,8 @@ Config file has sections - lexer names. Keys in sections:
   In-memory value for Python is "f".
 "res"
   Regular expression which finds "variables" inside string literals.
-  In-memory value for Python is "{.*?}".
-  In-memory value for Bash is "\$\w+|\${.*?}".
+  In-memory value for Python is "\{.*?\}".
+  In-memory value for Bash is "\$\w+|\$\{.*?\}".
 "theme"
   Sets coloring of fragment. Element id from CudaText syntax-theme.
   To see possible ids, open CudaText dialog: "Options / Settings-theme-syntax".
