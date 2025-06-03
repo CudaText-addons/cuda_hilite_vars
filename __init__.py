@@ -6,6 +6,7 @@ from cudax_lib import get_translation
 _ = get_translation(__file__)  # I18N
 
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
+config_sample = os.path.join(os.path.dirname(__file__), 'cuda_hilite_vars.sample.ini')
 MYTAG = app_proc(PROC_GET_UNIQUE_TAG, '')
 
 config = {
@@ -37,6 +38,15 @@ def get_color(name):
         return theme[name]['color_font']
     return 0x808080
 
+def create_config_if_not_exists():
+    if os.path.isfile(fn_config):
+        return
+    if os.path.isfile(config_sample):
+        import shutil
+        shutil.copyfile(config_sample, fn_config)
+    else:
+        ini_write(fn_config, '_', '_', '_')
+
 
 def load_config():
 
@@ -62,13 +72,11 @@ def load_config():
 class Command:
 
     def __init__(self):
-
+        create_config_if_not_exists()
         load_config()
 
     def config(self):
-
-        if not os.path.isfile(fn_config):
-            ini_write(fn_config, '_', '_', '_')
+        create_config_if_not_exists()
 
         if os.path.isfile(fn_config):
             file_open(fn_config)
