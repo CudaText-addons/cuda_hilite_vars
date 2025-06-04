@@ -6,23 +6,10 @@ from cudax_lib import get_translation
 _ = get_translation(__file__)  # I18N
 
 fn_config = os.path.join(app_path(APP_DIR_SETTINGS), 'cuda_hilite_vars.ini')
-config_sample = os.path.join(os.path.dirname(__file__), 'cuda_hilite_vars.sample.ini')
+fn_config_sample = os.path.join(os.path.dirname(__file__), 'cuda_hilite_vars.sample.ini')
 MYTAG = app_proc(PROC_GET_UNIQUE_TAG, '')
 
-config = {
-    'Python': {
-        'begin': 'f',
-        'res': r'{.*?}',
-        },
-    'Perl': {
-        'begin': '',
-        'res': r'[\$@%]\w+',  # $scalar, @array, %hash
-        },
-    'Bash script': {
-        'begin': '',
-        'res': r'\$\w+|\${.*?}',
-        },
-    }
+config = {}
 
 theme = app_proc(PROC_THEME_SYNTAX_DICT_GET, '')
 
@@ -41,9 +28,9 @@ def get_color(name):
 def create_config_if_not_exists():
     if os.path.isfile(fn_config):
         return
-    if os.path.isfile(config_sample):
+    if os.path.isfile(fn_config_sample):
         import shutil
-        shutil.copyfile(config_sample, fn_config)
+        shutil.copyfile(fn_config_sample, fn_config)
     else:
         ini_write(fn_config, '_', '_', '_')
 

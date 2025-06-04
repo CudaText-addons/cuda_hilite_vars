@@ -3,11 +3,6 @@ It performs work additional to lexer highlighting: highlights "variables"
 inside string literals. Lexer cannot do this, it highlights string literals
 with single color. Plugin supports multi-line string literals too.
 
-Plugin has predefined (in memory) configuration for:
-- Python
-- Bash script
-- Perl
-
 The predefined configuration file contains:
 - Python
 - Bash script
