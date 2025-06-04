@@ -1,3 +1,6 @@
+2025.06.02
+* change: add predefined configuration file
+
 2024.01.04
 * change: plugin is rewritten
 + add: multi-line literals (e.g. in Python) are supported too

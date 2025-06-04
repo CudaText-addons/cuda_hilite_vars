@@ -3,16 +3,19 @@ It performs work additional to lexer highlighting: highlights "variables"
 inside string literals. Lexer cannot do this, it highlights string literals
 with single color. Plugin supports multi-line string literals too.
 
-Plugin has predefined (in memory) configuration for:
+The predefined configuration file contains:
 - Python
 - Bash script
 - Perl
+- Ruby
+- Powershell
+
 For other lexers, you need to add config-file section.
 
 To open config-file, call menu item:
 "Options / Settings-plugins / Highlight Variables / Config".
 It creates config file settings/cuda_hilite_vars.ini, if it does not exist,
-and writes dummy ini-key there: _=_. This key _=_ is only to create the file.
+and writes default configs to it.
 You need to make additional sections there in ini-file.
 Config file has sections - lexer names. Keys in sections:
 
