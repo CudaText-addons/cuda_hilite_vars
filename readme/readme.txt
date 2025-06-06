@@ -34,7 +34,7 @@ Config file has sections - lexer names. Keys in sections:
 
 For example, config for Ruby lexer will look like this:
 [Ruby]
-begin=
+begin="
 res=\#\{.*?\}
 
 
