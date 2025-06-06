@@ -1,5 +1,5 @@
 2025.06.06
-- fix: fixed predefined config for Bash/PowerShell/Ruby; you need to delete your current config so predefined config will be copied over
+- fix: fixed predefined config "begin=" key for Bash/PowerShell/Ruby/Perl; you need to delete your current config so predefined config will be copied over
 
 2025.06.02
 * change: add predefined configuration file
